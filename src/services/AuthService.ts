@@ -41,7 +41,7 @@ class AuthService {
             profile: user.profile,
           },
         },
-        "dumbwaysterbaik",
+        process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
 
