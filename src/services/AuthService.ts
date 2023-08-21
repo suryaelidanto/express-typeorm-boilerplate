@@ -2,12 +2,16 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
+import { Role } from "../entities/Role";
 import { User } from "../entities/User";
 import { RoleEnum } from "../utils/roles";
 
 class AuthService {
   private readonly authRepository: Repository<User> =
     AppDataSource.getRepository(User);
+
+  private readonly roleRepository: Repository<Role> =
+    AppDataSource.getRepository(Role);
 
   async login(loginData: any): Promise<any> {
     try {
@@ -74,11 +78,18 @@ class AuthService {
 
       const password = await bcrypt.hash(userData.password, 10);
 
+      const role = await this.roleRepository.findOne({
+        where: {
+          name: RoleEnum.USER,
+        },
+        select: ["id"],
+      });
+
       const user = this.authRepository.create({
         email: userData.email,
         name: userData.name,
         password: password,
-        roles: { id: RoleEnum.USER },
+        roles: [{ id: role.id }],
         profile: { address: "" },
       });
 

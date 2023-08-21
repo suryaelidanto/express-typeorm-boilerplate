@@ -29,7 +29,7 @@ export class User {
 
   @ManyToMany(() => Role)
   @JoinTable()
-  roles: Role;
+  roles: Role[];
 
   @OneToOne(() => Profile)
   profile: Profile;
